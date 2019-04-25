@@ -15,6 +15,7 @@ import android.widget.Toast;
 public class Home extends AppCompatActivity implements MessageListenerInterface {
 
     static int PERMISSIONS_REQUEST_READ_SMS = 12736;
+    static int PERMISSIONS_REQUEST_READ_CONTACT = 2899;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,18 @@ public class Home extends AppCompatActivity implements MessageListenerInterface 
         ) {
             requestPermissions(new String[]{Manifest.permission.READ_SMS}, PERMISSIONS_REQUEST_READ_SMS);
         } else {
+            //registerListener();
+            requestReadContactPermission();
+        }
+    }
+
+    private void requestReadContactPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
+                Manifest.permission.READ_CONTACTS
+        ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACT);
+        } else {
             registerListener();
         }
     }
@@ -45,7 +58,16 @@ public class Home extends AppCompatActivity implements MessageListenerInterface 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_READ_SMS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            //registerListener();
+            requestReadContactPermission();
+        }else if (grantResults[0] != PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this, "Please accept permissions else app will not perform well", Toast.LENGTH_LONG).show();
+        }
+
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACT && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             registerListener();
+        }else if (grantResults[0] != PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this, "Please accept permissions else app will not perform well", Toast.LENGTH_LONG).show();
         }
     }
 
