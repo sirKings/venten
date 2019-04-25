@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Ven10</string>
+    <string name="loaded_image">loaded image</string>
+    <string name="venten">VENTEN</string>
 </resources>

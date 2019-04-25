@@ -16,18 +16,21 @@ public class MessageReceiveClass extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e("message", "new message");
+        String venten = "Ven10";
+        Log.e("String", "New message");
         try{
             if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
                 Bundle data = intent.getExtras();
                 Object[] pdus = (Object[]) data.get("pdus");
                 for(int i=0; i<pdus.length; i++){
                     SmsMessage sms = SmsMessage.createFromPdu((byte[]) pdus[i]);
-                    if(getContactName(sms.getDisplayOriginatingAddress(), context).equalsIgnoreCase("my glo")){
+                    if(getContactName(sms.getDisplayOriginatingAddress(), context).equalsIgnoreCase(venten)){
                         mListener.messageReceived(sms.getMessageBody());
+                        Intent activityIntent = new Intent(context, CodedMessage.class);
+                        activityIntent.putExtra("message", sms.getDisplayMessageBody());
+                        context.startActivity(activityIntent);
                     }
-                    Log.e("hello", sms.getMessageBody());
-                    Log.e("hello", sms.getDisplayMessageBody());
+
                 }
             }
         }catch (Exception e){
@@ -51,12 +54,11 @@ public class MessageReceiveClass extends BroadcastReceiver {
             }
             cursor.close();
         }
-        Log.e("Contact",contactName);
         return contactName;
     }
 
     public static void bindListener(MessageListenerInterface listener){
         mListener = listener;
-        Log.e("hello", "Listener binded");
+        Log.e("listener", "Binded");
     }
 }

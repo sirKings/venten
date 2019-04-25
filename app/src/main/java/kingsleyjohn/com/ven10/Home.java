@@ -2,9 +2,12 @@ package kingsleyjohn.com.ven10;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.os.Build;
+import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -27,16 +30,16 @@ public class Home extends AppCompatActivity implements MessageListenerInterface 
 
     @Override
     public void messageReceived(String message) {
-        Toast.makeText(this, "New Message Received: " + message, Toast.LENGTH_SHORT).show();
+        //just for testing the application
         Log.e("hello", message);
     }
 
     private void requestReadMessagePermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
-                Manifest.permission.READ_SMS
+                Manifest.permission.RECEIVE_SMS
         ) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermissions(new String[]{Manifest.permission.READ_SMS}, PERMISSIONS_REQUEST_READ_SMS);
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, PERMISSIONS_REQUEST_READ_SMS);
         } else {
             //registerListener();
             requestReadContactPermission();
@@ -74,5 +77,15 @@ public class Home extends AppCompatActivity implements MessageListenerInterface 
     private void registerListener(){
         //Register message listener
         MessageReceiveClass.bindListener(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerForOreoDevices();
+        }
+    }
+
+    private void registerForOreoDevices(){
+            MessageReceiveClass smsReceiver = new MessageReceiveClass();
+            IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+            intentFilter.addAction(Telephony.Sms.Intents.DATA_SMS_RECEIVED_ACTION);
+            this.registerReceiver(smsReceiver, intentFilter);
     }
 }
