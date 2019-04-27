@@ -44,7 +44,7 @@ public class CodedMessage extends AppCompatActivity {
          String dateString;
          String codedMessage;
 
-        final String secondLineRegex = "(?<=\\n)(.*)(?=\\n)";
+        final String secondLineRegex = "(?<=\\n|\\r)(.*)(?=\\n|\\r)";
         final String timeRegex = "([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])\\s*([AaPp][Mm])";
         final String dateRegex = "([0-9]{2}[/]{1}[0-9]{2}[/]{1}[0-9]{4})";
         final String lengthRegex = "(?<=w)(.*)(?=l)";
@@ -85,7 +85,7 @@ public class CodedMessage extends AppCompatActivity {
         String imageUrl = "https://dummyimage.com/"+width.trim()+"x"+length.trim()+"/"+firstColor.trim()+"/"+secondColor.trim();
 
         codeMsg.setText(codedMessage);
-        Picasso.with(this).load(imageUrl).into(imageView);
+        Picasso.with(this).load(imageUrl).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(imageView);
         time.setText(timeString);
 
         Log.e("image", imageUrl);
